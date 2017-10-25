@@ -5,5 +5,5 @@ provider "aws" {
 resource "aws_instance" "test" {
   ami = "${var.ami}"
   instance_type = "t2.small" //t2.micro t2.small
-  count = "${var.instance_count}"
+  count = "2"
 }
