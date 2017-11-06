@@ -9,6 +9,7 @@ resource "aws_instance" "test" {
   ///*
   tags {
     Name = "app-QA"
+    "billing-id" = "asdf3583"
   }
   //*/
 }
