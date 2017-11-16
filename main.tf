@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_instance" "test" {
   ami = "${var.ami}"
-  instance_type = "t2.micro" // t2.micro m4.largem
+  instance_type = "t4.large" // t2.micro m4.large
   count = "2"
   ///*
   tags {
