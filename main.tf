@@ -6,12 +6,10 @@ resource "aws_instance" "test" {
   ami = "${var.ami}"
   instance_type = "t2.micro" // t2.micro m4.largem
   count = "1"
-  ///*
   tags {
     Name = "app-QA"
     "billing-id" = "asdf3583"
   }
-  //*/
 }
 
 data "aws_vpc" "default" {
