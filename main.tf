@@ -7,7 +7,7 @@ resource "aws_instance" "test" {
   instance_type = "t2.micro" // t2.micro m4.largem
   count = "1"
   tags {
-    Name = "app-QA"
+    Name = "aklaas-TFE-test"
     "billing-id" = "asdf3583"
   }
 }
