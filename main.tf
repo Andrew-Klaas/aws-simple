@@ -2,6 +2,16 @@ provider "aws" {
 	region = "${var.region}"
 }
 
+terraform {
+  backend "remote" {
+    hostname = "app.terraform.io"
+    organization = "aklaas_v2"
+    workspaces {
+      name = "aws-instance"
+    }
+  }
+}
+
 resource "aws_instance" "test" {
   ami = "${var.ami}"
   instance_type = "t2.micro" // t2.micro m4.largem
