@@ -1,13 +1,26 @@
 provider "aws" {
-	region = "${var.region}"
+  region = var.region
 }
 
+/*
+terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "aklaas_v2"
+
+    workspaces {
+      name = "cli-apply"
+    }
+  }
+}
+*/
+
 resource "aws_instance" "test" {
-  ami = "${var.ami}"
+  ami           = var.ami
   instance_type = "t2.micro" // t2.micro m4.largem
-  count = "1"
-  tags {
-    Name = "aklaas-TFE-test"
+  count         = "1"
+  tags = {
+    Name         = "aklaas-TFE-test"
     "billing-id" = "asdf35814"
   }
 }
@@ -19,7 +32,7 @@ data "aws_vpc" "default" {
 resource "aws_security_group" "private_network_access" {
   name        = "private_network_access"
   description = "security group for private network access"
-  vpc_id      = "${data.aws_vpc.default.id}"
+  vpc_id      = data.aws_vpc.default.id
 
   # SSH
   ingress {
@@ -28,7 +41,6 @@ resource "aws_security_group" "private_network_access" {
     protocol    = "tcp"
     cidr_blocks = ["172.16.0.0/16"]
     #cidr_blocks = ["0.0.0.0./0"]
-
   }
 
   egress {
@@ -45,3 +57,4 @@ resource "aws_security_group" "private_network_access" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
