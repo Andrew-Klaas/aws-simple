@@ -7,9 +7,8 @@ terraform {
   backend "remote" {
     hostname     = "app.terraform.io"
     organization = "aklaas_v2"
-
     workspaces {
-      name = "cli-apply"
+      name = "aws-EC2-cli"
     }
   }
 }
@@ -30,7 +29,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_security_group" "private_network_access" {
-  name        = "private_network_access"
+  name        = "ec2-test-sg"
   description = "security group for private network access"
   vpc_id      = data.aws_vpc.default.id
 
