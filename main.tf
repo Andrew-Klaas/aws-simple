@@ -29,7 +29,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_security_group" "private_network_access" {
-  name        = "ec2-test-sg"
+  name        = "ec2-test-sg-vcs"
   description = "security group for private network access"
   vpc_id      = data.aws_vpc.default.id
 
