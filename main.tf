@@ -18,7 +18,7 @@ terraform {
 resource "aws_instance" "test" {
   ami           = var.ami
   instance_type = "t2.micro" // t2.micro m4.largem
-  count         = "1"
+  count         = "2"
   tags = {
     Name         = "aklaas-TFE-test"
     "billing-id" = "asdf35814"
