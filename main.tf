@@ -1,57 +1,59 @@
-provider "aws" {
-	region = "${var.region}"
-}
-
 terraform {
   backend "remote" {
-    hostname = "app.terraform.io"
+    hostname     = "app.terraform.io"
     organization = "aklaas_v2"
     workspaces {
       name = "aws-instance"
     }
   }
-}
-
-resource "aws_instance" "test" {
-  ami = "${var.ami}"
-  instance_type = "t2.micro" // t2.micro m4.largem
-  count = "1"
-  tags {
-    Name = "aklaas-TFE-test"
-    "billing-id" = "asdf35868"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
   }
 }
 
-data "aws_vpc" "default" {
-  default = true
+resource "aws_vpc" "my_vpc" {
+  cidr_block = "172.16.0.0/16"
+
+  tags = {
+    Name = "${var.prefix}-tf-demo"
+  }
 }
 
-resource "aws_security_group" "private_network_access" {
-  name        = "private_network_access"
-  description = "security group for private network access"
-  vpc_id      = "${data.aws_vpc.default.id}"
+resource "aws_subnet" "my_subnet" {
+  vpc_id            = aws_vpc.my_vpc.id
+  cidr_block        = "172.16.10.0/24"
+  availability_zone = "us-west-2a"
 
-  # SSH
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["172.16.0.0/16"]
-    #cidr_blocks = ["0.0.0.0./0"]
+  tags = {
+    Name = "${var.prefix}-tf-demo"
+  }
+}
 
+resource "aws_network_interface" "foo" {
+  subnet_id   = aws_subnet.my_subnet.id
+  private_ips = ["172.16.10.100"]
+
+  tags = {
+    Name = "${var.prefix}-tf-demo"
+  }
+}
+
+resource "aws_instance" "foo" {
+  ami           = "ami-005e54dee72cc1d00" # us-west-2
+  instance_type = "t2.micro"
+
+  network_interface {
+    network_interface_id = aws_network_interface.foo.id
+    device_index         = 0
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
+  credit_specification {
+    cpu_credits = "unlimited"
   }
-
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  tags = {
+    Name = "${var.prefix}-tf-demo"
   }
 }
