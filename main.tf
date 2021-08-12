@@ -1,9 +1,8 @@
 terraform {
   backend "remote" {
-    hostname     = "app.terraform.io"
     organization = "aklaas_v2"
     workspaces {
-      name = "aws-instance"
+      name = "aws-simple"
     }
   }
   required_providers {
@@ -12,6 +11,10 @@ terraform {
       version = "~> 3.0"
     }
   }
+}
+
+provider "aws" {
+  region = "us-west-2"
 }
 
 resource "aws_vpc" "my_vpc" {
@@ -41,8 +44,24 @@ resource "aws_network_interface" "foo" {
   }
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 resource "aws_instance" "foo" {
-  ami           = "ami-005e54dee72cc1d00" # us-west-2
+  ami           = data.aws_ami.ubuntu.id # us-west-2
   instance_type = "t2.micro"
 
   network_interface {
@@ -50,9 +69,6 @@ resource "aws_instance" "foo" {
     device_index         = 0
   }
 
-  credit_specification {
-    cpu_credits = "unlimited"
-  }
   tags = {
     Name = "${var.prefix}-tf-demo"
   }
