@@ -23,6 +23,7 @@ resource "aws_vpc" "my_vpc" {
 
   tags = {
     Name = "${var.prefix}-tf-demo"
+    billing-id = "1234"
   }
 }
 
@@ -33,15 +34,17 @@ resource "aws_subnet" "my_subnet" {
 
   tags = {
     Name = "${var.prefix}-tf-demo"
+    billing-id = "1234"
   }
 }
 
-resource "aws_network_interface" "foo" {
+resource "aws_network_interface" "my_nic" {
   subnet_id   = aws_subnet.my_subnet.id
   private_ips = ["172.16.10.100"]
 
   tags = {
     Name = "${var.prefix}-tf-demo"
+    billing-id = "1234"
   }
 }
 
@@ -61,11 +64,12 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "foo" {
+resource "aws_instance" "my_ec2" {
   ami           = data.aws_ami.ubuntu.id # us-west-2
   instance_type = "t2.micro"
 
   tags = {
     Name = "${var.prefix}-tf-demo"
+    billing-id = "1234"
   }
 }
