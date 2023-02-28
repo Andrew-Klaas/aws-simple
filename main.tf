@@ -32,7 +32,7 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "my_subnet" {
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = "172.16.10.0/24"
-  availability_zone = "us-west-2a"
+  availability_zone = "us-east-2a"
 
   tags = {
     Name = "${var.prefix}-tf-demo"
@@ -69,5 +69,13 @@ resource "aws_instance" "my_ec2" {
   tags = {
     Name = "${var.prefix}-tf-demo"
     billing-id = "1234"
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = self.ami == data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
+      error_message = "Must use the latest available AMI,
+        ${data.hcp_packer_image.hashiapp_image.cloud_image_id}."
+    }
   }
 }
