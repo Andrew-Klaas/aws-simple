@@ -52,7 +52,7 @@ resource "aws_network_interface" "my_nic" {
 
 data "hcp_packer_iteration" "ubuntu" {
   bucket_name = "learn-packer-ubuntu"
-  channel     = "production"
+  channel     = "Production"
 }
 
 data "hcp_packer_image" "ubuntu_us_east_2" {
