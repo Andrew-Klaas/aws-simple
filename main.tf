@@ -1,3 +1,4 @@
+//test
 terraform {
   backend "remote" {
     organization = "aklaas_v2"
@@ -74,8 +75,7 @@ resource "aws_instance" "my_ec2" {
   lifecycle {
     postcondition {
       condition     = self.ami == data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id
-      error_message = "Must use the latest available AMI,
-        ${data.hcp_packer_image.hashiapp_image.cloud_image_id}."
+      error_message = "Must use the latest available AMI, ${data.hcp_packer_image.ubuntu_us_east_2.cloud_image_id}."
     }
   }
 }
